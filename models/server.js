@@ -1,6 +1,7 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const { db } = require('../database/db');
 
 class Server {
   constructor() {
@@ -8,9 +9,13 @@ class Server {
     this.port = 3000;
 
     this.paths = {
-      user: "/api/v2/user",
-      repairs: "/api/v2/repairs",
+      user: '/api/v2/user',
+      repairs: '/api/v2/repairs',
     };
+
+    this.database();
+    this.middlewares();
+    this.routes();
   }
 
   middlewares() {
@@ -22,11 +27,19 @@ class Server {
 
   routes() {}
 
-  database() {}
+  database() {
+    db.authenticate()
+      .then(() => console.log('Database authenticate'))
+      .catch(err => console.log(err));
+
+    db.sync()
+      .then(() => console.log('Database Synced'))
+      .catch(err => console.log(err));
+  }
 
   listen() {
     this.app.listen(this.port, () => {
-      console.log("Server running on port", this.port);
+      console.log('Server running on port', this.port);
     });
   }
 }
