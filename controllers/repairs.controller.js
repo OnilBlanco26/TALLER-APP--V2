@@ -1,9 +1,10 @@
 const { Sequelize } = require('sequelize');
 const Repairs = require('../models/repairs.model');
 const User = require('../models/users.model');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-const findAllRepairs = catchAsync(async (req, res) => {
+const findAllRepairs = catchAsync(async (req, res, next) => {
   const repairs = await Repairs.findAll({
     attributes: { exclude: ['createdAt', 'updatedAt'] },
     where: {
@@ -27,10 +28,7 @@ const findAllRepairs = catchAsync(async (req, res) => {
   });
 
   if (repairs.length === 0) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'The repair was not found',
-    });
+    return next(new AppError('The repair was not found', 404));
   }
 
   res.status(200).json({
@@ -75,10 +73,7 @@ const createRepair = catchAsync(async (req, res) => {
   });
 
   if (getNumber) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'The MotorNumber has been exist',
-    });
+    return next(new AppError('The MotorNumber has been exist', 404));
   }
 
   const date = new Date();

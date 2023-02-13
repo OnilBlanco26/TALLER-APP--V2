@@ -1,7 +1,8 @@
 const User = require('../models/users.model');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-const findAllUsers = catchAsync(async (req, res) => {
+const findAllUsers = catchAsync(async (req, res, next) => {
   const user = await User.findAll({
     where: {
       status: true,
@@ -9,10 +10,7 @@ const findAllUsers = catchAsync(async (req, res) => {
   });
 
   if (!user) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'No user found',
-    });
+    return next(new AppError('User not found', 404));
   }
 
   res.status(200).json({

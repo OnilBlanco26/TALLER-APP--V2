@@ -1,4 +1,5 @@
 const User = require('../models/users.model');
+const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
 const validateUserById = catchAsync(async (req, res, next) => {
@@ -12,10 +13,7 @@ const validateUserById = catchAsync(async (req, res, next) => {
   });
 
   if (!user) {
-    res.status(404).json({
-      status: 'error',
-      message: 'user was not found',
-    });
+    return next(new AppError('User was not found', 404));
   }
 
   req.user = user;
@@ -32,18 +30,16 @@ const validateUserByEmail = catchAsync(async (req, res, next) => {
   });
 
   if (user && !user.status) {
-    return res.status(400).json({
-      status: 'error',
-      message:
+    return next(
+      new AppError(
         'The user has an account, but it is deactivated, please contact the administrator to activate it.',
-    });
+        400
+      )
+    );
   }
 
   if (user) {
-    return res.status(400).json({
-      status: 'error',
-      message: 'The email user already exists',
-    });
+    return next(new AppError('The email user already exists', 400));
   }
   req.user = user;
   next();
