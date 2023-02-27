@@ -68,13 +68,15 @@ const createRepair = catchAsync(async (req, res, next) => {
 
   const user = await User.findOne({
     where: {
-      id: userId
-    }
-  })
+      id: userId,
+    },
+  });
 
   //Si el usuario es un empleado no se podra crear una reparacion con un id de este
-  if(user.role === 'employee') {
-    return next(new AppError('It is not possible to create a repair for an employee.'))
+  if (user.role === 'employee') {
+    return next(
+      new AppError('It is not possible to create a repair for an employee.')
+    );
   }
 
   const getNumber = await Repairs.findOne({

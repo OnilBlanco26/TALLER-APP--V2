@@ -10,7 +10,7 @@ const globalErrorHandler = require('../controllers/error.controller');
 const AppError = require('../utils/appError');
 const { default: helmet } = require('helmet');
 const hpp = require('hpp');
-const xss = require('xss-clean')
+const xss = require('xss-clean');
 
 class Server {
   constructor() {
@@ -19,8 +19,8 @@ class Server {
     this.limiter = rateLimit({
       max: 100,
       windowMS: 15 * 60 * 1000,
-      message: "Too many request from this IP, please try again in 15 minutes"
-    })
+      message: 'Too many request from this IP, please try again in 15 minutes',
+    });
 
     this.paths = {
       user: '/api/v2/user',
@@ -33,16 +33,16 @@ class Server {
   }
 
   middlewares() {
-    this.app.use(helmet())
-    this.app.use(xss())
-    this.app.use(hpp())
+    this.app.use(helmet());
+    this.app.use(xss());
+    this.app.use(hpp());
 
     if (process.env.NODE_ENV === 'development') {
       this.app.use(morgan('dev'));
     }
-    
+
     // Este código se utiliza para limitar el número de llamadas API realizadas al servidor a 100 por hora.
-    this.app.use('/api/v2', this.limiter)
+    this.app.use('/api/v2', this.limiter);
 
     //UTILIZAMOS LAS CORS PARA PERMITIR ACCESO A LA API DESDE EL FRONT-END
     this.app.use(cors());

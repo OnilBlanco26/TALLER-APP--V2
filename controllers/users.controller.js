@@ -46,10 +46,9 @@ const createUser = catchAsync(async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   user.password = await bcrypt.hash(password, salt);
 
-
   await user.save();
 
-  const token = await generateJWT(user.id)
+  const token = await generateJWT(user.id);
 
   res.status(200).json({
     status: 'success',
@@ -87,11 +86,11 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 const login = catchAsync(async (req, res, next) => {
-  const {email, password} = req.body;
-  const {user} = req;
+  const { email, password } = req.body;
+  const { user } = req;
 
   if (!(await bcrypt.compare(password, user.password))) {
-    return next(new AppError('Incorrect email or password', 401))
+    return next(new AppError('Incorrect email or password', 401));
   }
 
   const token = await generateJWT(user.id);
@@ -99,10 +98,9 @@ const login = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     token,
-    user
-  })
-
-})
+    user,
+  });
+});
 
 const renewToken = catchAsync(async (req, res, next) => {
   const { id } = req.sessionUser;
@@ -128,7 +126,6 @@ const renewToken = catchAsync(async (req, res, next) => {
   });
 });
 
-
 module.exports = {
   findAllUsers,
   findOneUser,
@@ -136,5 +133,5 @@ module.exports = {
   updateUser,
   deleteUser,
   login,
-  renewToken
+  renewToken,
 };

@@ -1,9 +1,8 @@
-const {promisify} = require('util')
+const { promisify } = require('util');
 const User = require('../models/users.model');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-const jwt = require('jsonwebtoken')
-
+const jwt = require('jsonwebtoken');
 
 const protect = catchAsync(async (req, res, next) => {
   //1 Verificar que llegue el token
@@ -153,5 +152,5 @@ module.exports = {
   valideIfExistUserByEmail,
   protect,
   protectAccountOwner,
-  restricTo
+  restricTo,
 };
