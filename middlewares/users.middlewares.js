@@ -39,25 +39,7 @@ const protect = catchAsync(async (req, res, next) => {
       new AppError('The owner of this token if not longer available', 401)
     );
   }
-
-  //4 Verificar si el usuario ha cambiado la contraseña despues de que el token haya expirado
-
-  if (user.passwordChangedAt) {
-    const changedTimeStamp = parseInt(
-      user.passwordChangedAt.getTime() / 1000,
-      10
-    );
-
-    if (decoded.iat < changedTimeStamp) {
-      return next(
-        new AppError(
-          'User recently changed password!, please login again.',
-          401
-        )
-      );
-    }
-  }
-
+  
   req.sessionUser = user;
   next();
 });
