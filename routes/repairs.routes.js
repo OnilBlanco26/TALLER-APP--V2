@@ -16,7 +16,7 @@ const { validateFields } = require('../middlewares/validateField.middleware');
 
 const router = Router();
 
-router.use(protect)
+router.use(protect);
 
 router.get('/', restricTo('employee'), findAllRepairs);
 
@@ -33,9 +33,19 @@ router.post(
   createRepair
 );
 
-router.patch('/:id',restricTo('employee') ,validateRepairByStatus, updateRepair);
+router.patch(
+  '/:id',
+  restricTo('employee'),
+  validateRepairByStatus,
+  updateRepair
+);
 
-router.delete('/:id',restricTo('employee'), validateRepairByStatus, deleteRepair);
+router.delete(
+  '/:id',
+  restricTo('employee'),
+  validateRepairByStatus,
+  deleteRepair
+);
 
 module.exports = {
   repairsRouter: router,

@@ -7,11 +7,15 @@ const {
   updateUser,
   deleteUser,
   login,
+  renewToken,
 } = require('../controllers/users.controller');
 const {
   validateUserById,
   validateUserByEmail,
   valideIfExistUserByEmail,
+  protect,
+  protectAccountOwner,
+  restricTo,
 } = require('../middlewares/users.middlewares');
 const { validateFields } = require('../middlewares/validateField.middleware');
 
@@ -20,6 +24,8 @@ const router = Router();
 router.get('/', findAllUsers);
 
 router.get('/:id', validateUserById, findOneUser);
+
+router.get('/renew', protect, renewToken);
 
 router.post(
   '/',
@@ -34,17 +40,23 @@ router.post(
   createUser
 );
 
-router.post('/login', [
-  check('email', 'The email must be mandatory').not().isEmpty(),
-  check('email', 'The email must be mandatory').isEmail(),
-  check('password', 'The password must be mandatory'),
-  valideIfExistUserByEmail,
-  validateFields
-] , login)
+router.post(
+  '/login',
+  [
+    check('email', 'The email must be mandatory').not().isEmpty(),
+    check('email', 'The email must be mandatory').isEmail(),
+    check('password', 'The password must be mandatory'),
+    valideIfExistUserByEmail,
+    validateFields,
+  ],
+  login
+);
 
-router.patch('/:id', validateUserById, updateUser);
+router.use(protect);
 
-router.delete('/:id', deleteUser);
+router.patch('/:id', validateUserById, protectAccountOwner, updateUser);
+
+router.delete('/:id', protectAccountOwner, deleteUser);
 
 module.exports = {
   userRouter: router,
