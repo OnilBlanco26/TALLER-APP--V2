@@ -104,11 +104,37 @@ const login = catchAsync(async (req, res, next) => {
 
 })
 
+const renewToken = catchAsync(async (req, res, next) => {
+  const { id } = req.sessionUser;
+
+  const token = await generateJWT(id);
+
+  const user = await User.findOne({
+    where: {
+      status: true,
+      id,
+    },
+  });
+
+  return res.status(200).json({
+    status: 'success',
+    token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+  });
+});
+
+
 module.exports = {
   findAllUsers,
   findOneUser,
   createUser,
   updateUser,
   deleteUser,
-  login
+  login,
+  renewToken
 };
