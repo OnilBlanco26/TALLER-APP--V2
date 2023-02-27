@@ -1,6 +1,8 @@
 const User = require('../models/users.model');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
+const bcrypt = require('bcryptjs');
+const generateJWT = require('../utils/jwt');
 
 const findAllUsers = catchAsync(async (req, res, next) => {
   const user = await User.findAll({
@@ -40,9 +42,19 @@ const createUser = catchAsync(async (req, res) => {
     role,
   });
 
+  // ENCRIPTAR LA CONTRASEÑA
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+
+
+  await user.save();
+
+  const token = await generateJWT(user.id)
+
   res.status(200).json({
     status: 'success',
     message: 'The user was created successfully',
+    token,
     user,
   });
 });
@@ -74,10 +86,29 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+const login = catchAsync(async (req, res, next) => {
+  const {email, password} = req.body;
+  const {user} = req;
+
+  if (!(await bcrypt.compare(password, user.password))) {
+    return next(new AppError('Incorrect email or password', 401))
+  }
+
+  const token = await generateJWT(user.id);
+
+  res.status(200).json({
+    status: 'success',
+    token,
+    user
+  })
+
+})
+
 module.exports = {
   findAllUsers,
   findOneUser,
   createUser,
   updateUser,
   deleteUser,
+  login
 };
