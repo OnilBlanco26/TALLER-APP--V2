@@ -38,7 +38,7 @@ const findAllRepairs = catchAsync(async (req, res, next) => {
   });
 });
 
-const findOneRepair = catchAsync(async (req, res) => {
+const findOneRepair = catchAsync(async (req, res, next) => {
   const { repair } = req;
 
   const repairData = await Repairs.findOne({
@@ -63,7 +63,7 @@ const findOneRepair = catchAsync(async (req, res) => {
   });
 });
 
-const createRepair = catchAsync(async (req, res) => {
+const createRepair = catchAsync(async (req, res, next) => {
   const { motorsNumber, description, userId } = req.body;
 
   const getNumber = await Repairs.findOne({
@@ -92,7 +92,7 @@ const createRepair = catchAsync(async (req, res) => {
   });
 });
 
-const updateRepair = catchAsync(async (req, res) => {
+const updateRepair = catchAsync(async (req, res, next) => {
   const { repair } = req;
 
   await repair.update({ status: 'completed' });
@@ -104,7 +104,7 @@ const updateRepair = catchAsync(async (req, res) => {
   });
 });
 
-const deleteRepair = catchAsync(async (req, res) => {
+const deleteRepair = catchAsync(async (req, res, next) => {
   const { repair } = req;
 
   await repair.update({ status: 'cancelled' });
