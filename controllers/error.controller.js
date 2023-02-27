@@ -46,7 +46,9 @@ const globalErrorHandler = (err, req, res, next) => {
       error = err;
     }
     if (error.parent?.code === '22P02') error = handleCastError22P02(error);
-
+    if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
+    if (error.name === 'TokenExpiredError')
+      error = handleJWTExpiredError(error);
     sendErrorProd(error, res);
   }
 };
