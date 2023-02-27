@@ -24,7 +24,7 @@ const User = db.define('user', {
     type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'user',
-    type: DataTypes.ENUM('user', 'admin'),
+    type: DataTypes.ENUM('user', 'admin', 'employee'),
   },
   status: {
     type: DataTypes.BOOLEAN,
